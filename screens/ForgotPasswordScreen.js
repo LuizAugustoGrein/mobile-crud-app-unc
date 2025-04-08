@@ -10,24 +10,22 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import {
     auth,
-    createUserWithEmailAndPassword
+    sendPasswordResetEmail
 } from '../firebase';
 
-export default function RegisterScreen () {
+export default function ForgotPasswordScreen () {
 
     const navigation = useNavigation();
 
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
     const [ email, setEmail ] = useState('');
-    const [ password, setPassword ] = useState('');
 
     const [ errorMessage, setErrorMessage ] = useState('');
 
-    const register = async () => {
-        if (!email || !password) {
-            setErrorMessage('Informe o e-mail e senha.');
+    const resetPassword = async () => {
+        if (!email) {
+            setErrorMessage('Informe o e-mail.');
             return;
         }
 
@@ -36,33 +34,21 @@ export default function RegisterScreen () {
             return;
         }
 
-        if (!regexPassword.test(password)) {
-            setErrorMessage('A senha deve conter no mínimo 8 caracteres, letra maiúscula, minúscula, número e símbolo');
-            return;
-        }
-
         setErrorMessage('');
 
-        createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            console.log('Usuário: ', user);
-            navigation.replace('Home');
-        })
-        .catch((error) => {
-            setErrorMessage(error.message);
-        })
-       
+        await sendPasswordResetEmail(auth, email);
+
+        console.log('e-mail de redenifição enviado!');
     }
 
     useEffect(() => {
         setErrorMessage('');
-    }, [email, password])
+    }, [email])
 
     return (
         <SafeAreaView>
             <View style={styles.container}>
-                <Text style={styles.title}>Registrar-se</Text>
+                <Text style={styles.title}>Esqueci a senha</Text>
                 <TextInput
                     placeholder="E-mail"
                     placeholderTextColor="black"
@@ -72,36 +58,25 @@ export default function RegisterScreen () {
                     onChangeText={setEmail}
                     value={email}
                 />
-                <TextInput
-                    placeholder="Senha"
-                    placeholderTextColor="black"
-                    style={styles.input}
-                    autoCapitalize="none"
-                    secureTextEntry={true}
-                    onChangeText={setPassword}
-                    value={password}
-                />
                 {errorMessage &&
                     <Text style={styles.errorMessage}>{errorMessage}</Text>
                 }
                 <TouchableOpacity
                     onPress={() => {
-                        register();
+                        resetPassword();
                     }}
                     style={styles.button}
                 >
-                    <Text style={styles.buttonText} >Registrar-se</Text>
+                    <Text style={styles.buttonText} >Redefinir Senha</Text>
                 </TouchableOpacity>
 
-                <Text>Já tem uma conta?</Text>
-                
                 <TouchableOpacity
                     onPress={() => {
                         navigation.goBack();
                     }}
                     style={styles.button}
                 >
-                    <Text style={styles.buttonText} >Voltar para Login</Text>
+                    <Text style={styles.buttonText} >Voltar</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

@@ -8,6 +8,10 @@ import {
     TouchableOpacity
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import {
+    auth,
+    signInWithEmailAndPassword
+} from '../firebase';
 
 export default function LoginScreen () {
 
@@ -38,6 +42,16 @@ export default function LoginScreen () {
         }
 
         setErrorMessage('');
+
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredentials) => {
+            const user = userCredentials.user;
+            console.log(user);
+            navigation.replace('Home');
+        })
+        .catch((error) => {
+            setErrorMessage(error.message);
+        })
     }
 
     useEffect(() => {
@@ -66,6 +80,13 @@ export default function LoginScreen () {
                     onChangeText={setPassword}
                     value={password}
                 />
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.push('ForgotPassword');
+                    }}
+                >
+                    <Text>Esqueci a senha</Text>
+                </TouchableOpacity>
                 {errorMessage &&
                     <Text style={styles.errorMessage}>{errorMessage}</Text>
                 }
