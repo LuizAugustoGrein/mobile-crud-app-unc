@@ -4,14 +4,14 @@ import {
     Text,
     View,
     StyleSheet,
-    TextInput,
-    TouchableOpacity
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import {
     auth,
     createUserWithEmailAndPassword
 } from '../firebase';
+import { PrimaryButton, SecondaryButton } from '../components/Buttons';
+import { EmailInput, PasswordInput } from '../components/CustomInputs';
 
 export default function RegisterScreen () {
 
@@ -62,46 +62,24 @@ export default function RegisterScreen () {
         <SafeAreaView>
             <View style={styles.container}>
                 <Text style={styles.title}>Registrar-se</Text>
-                <TextInput
-                    placeholder="E-mail"
-                    placeholderTextColor="black"
-                    style={styles.input}
-                    inputMode="email"
-                    autoCapitalize="none"
-                    onChangeText={setEmail}
-                    value={email}
-                />
-                <TextInput
-                    placeholder="Senha"
-                    placeholderTextColor="black"
-                    style={styles.input}
-                    autoCapitalize="none"
-                    secureTextEntry={true}
-                    onChangeText={setPassword}
-                    value={password}
-                />
+                <EmailInput value={email} setValue={setEmail} />
+
+                <EmailInput value={email} setValue={setEmail} />
+
+                
+                <PasswordInput value={password} setValue={setPassword} />
                 {errorMessage &&
                     <Text style={styles.errorMessage}>{errorMessage}</Text>
                 }
-                <TouchableOpacity
-                    onPress={() => {
-                        register();
-                    }}
-                    style={styles.button}
-                >
-                    <Text style={styles.buttonText} >Registrar-se</Text>
-                </TouchableOpacity>
+                <PrimaryButton text={"Registrar-se"} action={() => {
+                    register();
+                }} />
 
                 <Text>Já tem uma conta?</Text>
                 
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.goBack();
-                    }}
-                    style={styles.button}
-                >
-                    <Text style={styles.buttonText} >Voltar para Login</Text>
-                </TouchableOpacity>
+                <SecondaryButton text={'Voltar para Login'} action={() => {
+                    navigation.goBack();
+                }} />
             </View>
         </SafeAreaView>
     )
@@ -115,28 +93,6 @@ const styles = StyleSheet.create({
         fontSize: 45,
         textAlign: 'center',
         marginVertical: 40
-    },
-    input: {
-        width: '100%',
-        borderColor: 'black',
-        borderWidth: 2,
-        borderRadius: 15,
-        padding: 15,
-        fontSize: 20,
-        color: 'black',
-        marginVertical: 15
-    },
-    button: {
-        backgroundColor: '#27428f',
-        padding: 15,
-        borderRadius: 15,
-        marginVertical: 15
-    },
-    buttonText: {
-        color: 'white',
-        textAlign: 'center',
-        fontSize: 22,
-        fontWeight: 'bold'
     },
     errorMessage: {
         fontSize: 18,

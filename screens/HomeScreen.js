@@ -1,9 +1,8 @@
-import { SafeAreaView, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { SafeAreaView, Text, StyleSheet } from "react-native";
 import { auth, signOut } from '../firebase';
-import { useNavigation } from '@react-navigation/native'
+import { DangerButton } from "../components/Buttons";
 
 export default function HomeScreen () {
-    const navigation = useNavigation();
 
     const logout = async () => {
         await signOut(auth);
@@ -12,12 +11,7 @@ export default function HomeScreen () {
     return (
         <SafeAreaView>
             <Text style={styles.title} > Usuário Logado!</Text>
-            <TouchableOpacity
-                onPress={logout}
-                style={styles.logoutButton}
-            >
-                <Text style={styles.logoutButtonText}>Sair da Conta</Text>
-            </TouchableOpacity>
+            <DangerButton text={'Desconectar'} action={logout} />
         </SafeAreaView>
     )
 }

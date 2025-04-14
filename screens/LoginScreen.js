@@ -4,7 +4,6 @@ import {
     Text,
     View,
     StyleSheet,
-    TextInput,
     TouchableOpacity
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
@@ -12,6 +11,8 @@ import {
     auth,
     signInWithEmailAndPassword
 } from '../firebase';
+import { PrimaryButton, SecondaryButton } from '../components/Buttons';
+import { EmailInput, PasswordInput } from '../components/CustomInputs';
 
 export default function LoginScreen () {
 
@@ -61,24 +62,10 @@ export default function LoginScreen () {
         <SafeAreaView>
             <View style={styles.container}>
                 <Text style={styles.title}>Entrar</Text>
-                <TextInput
-                    placeholder="E-mail"
-                    placeholderTextColor="black"
-                    style={styles.input}
-                    inputMode="email"
-                    autoCapitalize="none"
-                    onChangeText={setEmail}
-                    value={email}
-                />
-                <TextInput
-                    placeholder="Senha"
-                    placeholderTextColor="black"
-                    style={styles.input}
-                    autoCapitalize="none"
-                    secureTextEntry={true}
-                    onChangeText={setPassword}
-                    value={password}
-                />
+                <EmailInput value={email} setValue={setEmail} />
+
+                <PasswordInput value={password} setValue={setPassword} />
+                
                 <TouchableOpacity
                     onPress={() => {
                         navigation.push('ForgotPassword');
@@ -89,25 +76,15 @@ export default function LoginScreen () {
                 {errorMessage &&
                     <Text style={styles.errorMessage}>{errorMessage}</Text>
                 }
-                <TouchableOpacity
-                    onPress={() => {
-                        login();
-                    }}
-                    style={styles.button}
-                >
-                    <Text style={styles.buttonText} >Login</Text>
-                </TouchableOpacity>
+                <PrimaryButton text={'Login'} action={() => {
+                    login();
+                }} />
 
                 <Text>Ainda não tem uma conta?</Text>
 
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.push('Register');
-                    }}
-                    style={styles.button}
-                >
-                    <Text style={styles.buttonText} >Registrar-se</Text>
-                </TouchableOpacity>
+                <SecondaryButton text={'Registrar-se'} action={() => {
+                    navigation.push('Register');
+                }} />
             </View>
         </SafeAreaView>
     )
@@ -121,28 +98,6 @@ const styles = StyleSheet.create({
         fontSize: 45,
         textAlign: 'center',
         marginVertical: 40
-    },
-    input: {
-        width: '100%',
-        borderColor: 'black',
-        borderWidth: 2,
-        borderRadius: 15,
-        padding: 15,
-        fontSize: 20,
-        color: 'black',
-        marginVertical: 15
-    },
-    button: {
-        backgroundColor: '#27428f',
-        padding: 15,
-        borderRadius: 15,
-        marginVertical: 15
-    },
-    buttonText: {
-        color: 'white',
-        textAlign: 'center',
-        fontSize: 22,
-        fontWeight: 'bold'
     },
     errorMessage: {
         fontSize: 18,
