@@ -1,17 +1,21 @@
 import { initializeApp } from "firebase/app";
 import {
-    getAuth,
     createUserWithEmailAndPassword,
     signOut,
     signInWithEmailAndPassword,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    initializeAuth,
+    getReactNativePersistence
 } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
  
 const app = initializeApp({
-    // chave
+    // chaves
 });
 
-const auth = getAuth(app);
+const auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage)
+})
 
 export {
     auth,

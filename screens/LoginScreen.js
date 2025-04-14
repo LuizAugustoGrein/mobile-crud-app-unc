@@ -47,7 +47,6 @@ export default function LoginScreen () {
         .then((userCredentials) => {
             const user = userCredentials.user;
             console.log(user);
-            navigation.replace('Home');
         })
         .catch((error) => {
             setErrorMessage(error.message);

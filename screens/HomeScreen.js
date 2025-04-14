@@ -7,7 +7,6 @@ export default function HomeScreen () {
 
     const logout = async () => {
         await signOut(auth);
-        navigation.replace("Login");
     }
 
     return (

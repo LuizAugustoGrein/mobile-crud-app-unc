@@ -47,7 +47,6 @@ export default function RegisterScreen () {
         .then((userCredential) => {
             const user = userCredential.user;
             console.log('Usuário: ', user);
-            navigation.replace('Home');
         })
         .catch((error) => {
             setErrorMessage(error.message);
