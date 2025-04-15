@@ -29,6 +29,18 @@ export function PasswordInput ({ placeholder = "Senha", value, setValue }) {
     )
 }
 
+export function CustomTextInput ({ placeholder, value, setValue }) {
+    return (
+        <TextInput
+            placeholder={placeholder}
+            placeholderTextColor="black"
+            style={styles.input}
+            onChangeText={setValue}
+            value={value}
+        />
+    )
+}
+
 const styles = StyleSheet.create({
     input: {
         width: '100%',

@@ -1,6 +1,9 @@
 import { SafeAreaView, Text, StyleSheet } from "react-native";
-import { auth, signOut } from '../firebase';
-import { DangerButton } from "../components/Buttons";
+import { auth, signOut, db } from '../firebase';
+import { DangerButton, PrimaryButton } from "../components/Buttons";
+import { CustomTextInput } from "../components/CustomInputs";
+import { useState, useEffect } from "react";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 
 export default function HomeScreen () {
 
@@ -8,10 +11,54 @@ export default function HomeScreen () {
         await signOut(auth);
     }
 
+    const [text, setText] = useState('');
+    const [list, setList] = useState([]);
+
+    const loadRecords = async () => {
+        const snapshot = await getDocs(collection(db, 'records'));
+        const records = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        setList(records);
+
+        console.log(records);
+    }
+
+    useEffect(() => {
+        loadRecords();
+    }, []);
+
+    const add = async () => {
+        if (!text) {
+            console.log('preencha o campo.');
+            return;
+        }
+
+        await addDoc(collection(db, 'records'), {
+            text: text
+        });
+
+        loadRecords();
+
+        setText('');
+    }
+ 
     return (
-        <SafeAreaView>
-            <Text style={styles.title} > Usuário Logado!</Text>
-            <DangerButton text={'Desconectar'} action={logout} />
+        <SafeAreaView style={{ margin: 20 }}>
+            <Text style={styles.title} >TO DO LIST</Text>
+            {/* <DangerButton text={'Desconectar'} action={logout} /> */}
+
+            <CustomTextInput placeholder={'Digite o texto...'} value={text} setValue={setText} />
+
+            <PrimaryButton text="Adicionar Registro" action={() => {
+                add();
+            }} />
+
+            {list.map((item) => (
+                <Text key={item.id}>{item.text}</Text>
+            ))}
         </SafeAreaView>
     )
 }
