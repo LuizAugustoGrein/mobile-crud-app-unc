@@ -3,9 +3,20 @@ import { auth, signOut, db } from '../firebase';
 import { DangerButton, PrimaryButton } from "../components/Buttons";
 import { CustomTextInput } from "../components/CustomInputs";
 import { useState, useEffect } from "react";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function HomeScreen () {
+
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+
+        return unsubscribe;
+    }, []);
 
     const logout = async () => {
         await signOut(auth);
@@ -15,7 +26,12 @@ export default function HomeScreen () {
     const [list, setList] = useState([]);
 
     const loadRecords = async () => {
-        const snapshot = await getDocs(collection(db, 'records'));
+        const snapshot = await getDocs(
+            query(
+                collection(db, 'records'),
+                where('user_id', '==', user.uid)
+            )
+        );
         const records = snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data()
@@ -27,17 +43,23 @@ export default function HomeScreen () {
     }
 
     useEffect(() => {
+        if (!user) {
+            return;
+        }
         loadRecords();
-    }, []);
+    }, [user]);
 
     const add = async () => {
+        console.log(user.uid);
+
         if (!text) {
             console.log('preencha o campo.');
             return;
         }
 
         await addDoc(collection(db, 'records'), {
-            text: text
+            text: text,
+            user_id: user.uid
         });
 
         loadRecords();
@@ -48,7 +70,7 @@ export default function HomeScreen () {
     return (
         <SafeAreaView style={{ margin: 20 }}>
             <Text style={styles.title} >TO DO LIST</Text>
-            {/* <DangerButton text={'Desconectar'} action={logout} /> */}
+            <DangerButton text={'Desconectar'} action={logout} />
 
             <CustomTextInput placeholder={'Digite o texto...'} value={text} setValue={setText} />
 
